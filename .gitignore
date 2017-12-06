@@ -1,6 +1,9 @@
-/.web-server-pid
 /app/config/parameters.yml
-/build/
+/build/*
+!/build
+!/build/ruleset.xml
+!/build/phpdox.xml
+!/build/phpmd.xml
 /phpunit.xml
 /var/*
 !/var/cache
@@ -15,3 +18,25 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+/web/apidoc/
+/build.properties
+
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store
