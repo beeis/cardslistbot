@@ -1,0 +1,3 @@
+cards_list_bot:
+    resource: "@CardsListBotBundle/Resources/config/routing.yml"
+    prefix:   /

@@ -1,0 +1,4 @@
+cards_list_bot_webhook:
+    path:     /webhook
+    methods:  [POST]
+    defaults: { _controller: CardsListBotBundle:Webhook:index }

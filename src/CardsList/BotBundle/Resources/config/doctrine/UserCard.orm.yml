@@ -1,0 +1,24 @@
+CardsList\BotBundle\Entity\UserCard:
+    type: entity
+    table: null
+    repositoryClass: CardsList\BotBundle\Repository\UserCardRepository
+    id:
+        id:
+            type: bigint
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        user:
+            type: bigint
+            nullable: false
+        customName:
+            type: string
+        isOwner:
+            type: boolean
+            default: false
+    manyToOne:
+        card:
+            targetEntity: CardsList\BotBundle\Entity\Card
+            nullable: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,44 @@
+services:
+    cards_list_bot.manager.telegram_manager:
+        class: CardsList\BotBundle\Manager\TelegramManager
+        arguments:
+            - '@longman.telegram-bot'
+            - '@database_connection'
+            - '@logger'
+            - '@service_container'
+            - '@?'
+
+    cards_list_bot.command.get_updates_command:
+        class: CardsList\BotBundle\Command\GetUpdatesCommand
+        arguments: ['@?', '@cards_list_bot.manager.telegram_manager']
+        tags:
+            - { name: console.command }
+
+    cards_list_bot.command.bot.start_command:
+        class: CardsList\BotBundle\Command\Bot\StartCommand
+        tags:
+            - { name: telegram.command, command: start }
+
+    cards_list_bot.command_bot.callback_query_command:
+        class: CardsList\BotBundle\Command\Bot\CallbackQueryCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: callbackquery }
+
+    cards_list_bot.command_bot.message_command:
+        class: CardsList\BotBundle\Command\Bot\MessageCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: genericmessage }
+
+    cards_list_bot.command_bot.inline_query_command:
+        class: CardsList\BotBundle\Command\Bot\InlineQueryCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: inlinequery }
+
+    cards_list_bot.command_bot.chosen_inline_result_command:
+        class: CardsList\BotBundle\Command\Bot\ChosenInlineResultCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: choseninlineresult  }

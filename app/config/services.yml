@@ -1,0 +1,11 @@
+# Learn more about services, parameters and containers at
+# https://symfony.com/doc/current/service_container.html
+parameters:
+    longman.telegram-bot.class: CardsList\BotBundle\Component\Telegram
+
+services:
+    longman.telegram-bot:
+        class: '%longman.telegram-bot.class%'
+        arguments:
+            - '%telegram.api_key%'
+            - '%telegram.bot_username%'
