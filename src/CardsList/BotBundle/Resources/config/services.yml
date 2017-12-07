@@ -1,3 +1,7 @@
+parameters:
+    cards_list_bot.manager.telegram_manager.data:
+        webhook_url: '%telegram.webhook_url%'
+
 services:
     cards_list_bot.manager.telegram_manager:
         class: CardsList\BotBundle\Manager\TelegramManager
@@ -6,10 +10,22 @@ services:
             - '@database_connection'
             - '@logger'
             - '@service_container'
-            - '@?'
+            - '%cards_list_bot.manager.telegram_manager.data%'
 
     cards_list_bot.command.get_updates_command:
         class: CardsList\BotBundle\Command\GetUpdatesCommand
+        arguments: ['@?', '@cards_list_bot.manager.telegram_manager']
+        tags:
+            - { name: console.command }
+
+    cards_list_bot.command.setup_webhook_command:
+        class: CardsList\BotBundle\Command\SetupWebhookCommand
+        arguments: ['@?', '@cards_list_bot.manager.telegram_manager']
+        tags:
+            - { name: console.command }
+
+    cards_list_bot.command.delete_webhook_command:
+        class: CardsList\BotBundle\Command\DeleteWebhookCommand
         arguments: ['@?', '@cards_list_bot.manager.telegram_manager']
         tags:
             - { name: console.command }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Command\Bot;
 
+use CardsList\BotBundle\Entity\UserCard;
 use Doctrine\ORM\EntityManagerInterface;
 use Longman\TelegramBot\Request;
 
@@ -50,7 +51,7 @@ class InlineQueryCommand extends BotCommand
     public function execute()
     {
         $inline_query = $this->getUpdate()->getInlineQuery();
-        $user_id = $inline_query->getFrom();
+        $user = $inline_query->getFrom();
         $query = $inline_query->getQuery();
 
         if (1 === preg_match('/method:addCard:[0-9]{16}/', $query)) {
@@ -115,9 +116,54 @@ class InlineQueryCommand extends BotCommand
             );
         }
 
+        $expr = $this->entityManager->createQueryBuilder()->expr();
+        $expr->like('user_card.customName', ':query');
+
+        $userCards = $this->entityManager
+            ->createQueryBuilder()
+            ->select('user_card')
+            ->from('CardsListBotBundle:UserCard', 'user_card')
+            ->where('user_card.isOwner = 1 AND user_card.user = :user_id')
+            ->orWhere($expr->like('user_card.customName', ':query').' AND user_card.user = :user_id')
+            ->orderBy('user_card.isOwner', 'DESC')
+            ->setParameters(
+                [
+                    'user_id' => $user->getId(),
+                    'query' => '%'.$query.'%',
+                ]
+            )
+            ->getQuery()
+            ->getResult();
+
+        $results = [];
+        /** @var UserCard $userCard */
+        foreach ($userCards as $userCard) {
+            $results[] = [
+                'type' => 'article',
+                'id' => $userCard->getId(),
+                'title' => sprintf(
+                    '%s ****%s',
+                    $userCard->getCustomName(),
+                    substr($userCard->getCard()->getNumber(), -4)
+                ),
+                'input_message_content' => [
+                    'message_text' => sprintf(
+                        '%s карта: %s',
+                        $userCard->getCustomName(),
+                        $userCard->getCard()->getNumber()
+                    ),
+                ],
+                'thumb_url' => 'https://vignette.wikia.nocookie.net/creditcards/images/6/65/Brand.gif/revision/latest',
+                'thumb_width' => 10,
+                'thumb_height' => 10,
+            ];
+        }
+
         return Request::answerInlineQuery(
             [
                 'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
+                'cache_time' => 0, //for dev env
+                'results' => $results,
             ]
         );
     }

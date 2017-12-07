@@ -6,6 +6,7 @@ namespace CardsList\BotBundle\Manager;
 
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 use Longman\TelegramBot\TelegramLog;
 use Monolog\Logger;
@@ -39,6 +40,11 @@ class TelegramManager
     private $logger;
 
     /**
+     * @var null|string
+     */
+    private $webhookUrl;
+
+    /**
      * TelegramManager constructor.
      *
      * @param Telegram $telegram
@@ -58,6 +64,7 @@ class TelegramManager
         $this->connection = $connection;
         $this->container = $container;
         $this->logger = $logger;
+        $this->webhookUrl = $data['webhook_url'] ?? null;
         $this->init($data);
     }
 
@@ -68,10 +75,6 @@ class TelegramManager
 
         if (true === isset($data['botan_url'])) {
             $this->telegram->enableBotan($data['botan_url']);
-        }
-
-        if (true === isset($data['webhook_url'])) {
-            $this->telegram->setWebhook($data['webhook_url']);
         }
     }
 
@@ -96,4 +99,19 @@ class TelegramManager
     {
         return $this->telegram;
     }
+
+    /**
+     * @return string|null
+     */
+    public function setupWebhook()
+    {
+        try {
+            $this->telegram->setWebhook($this->webhookUrl);
+        } catch (TelegramException $exception) {
+            return $exception->getMessage();
+        }
+
+        return null;
+    }
+
 }

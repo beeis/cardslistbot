@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CardsList\BotBundle\Command;
 
 use CardsList\BotBundle\Manager\TelegramManager;
@@ -8,11 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class GetUpdatesCommand
+ * Class DeleteWebhookCommand
  *
- * @package AppBundle\Command
+ * @package CardsList\BotBundle\Command
  */
-class GetUpdatesCommand extends Command
+class DeleteWebhookCommand extends Command
 {
     /**
      * @var TelegramManager
@@ -37,8 +39,8 @@ class GetUpdatesCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('cards-list:bot:get-updates')
-            ->setDescription('This command activate Telegram getUpdates');
+            ->setName('cards-list:bot:delete-webhook')
+            ->setDescription('This command setup webhook');
     }
 
     /**
@@ -46,9 +48,7 @@ class GetUpdatesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $response = $this->telegramManager->getTelegram()->handleGetUpdates();
-        print_r($response->getResult());
-
-        $output->writeln('hello world!');
+        $result = $this->telegramManager->getTelegram()->deleteWebhook();
+        $output->writeln($result ?? 'Webhook deleted successfully');
     }
 }

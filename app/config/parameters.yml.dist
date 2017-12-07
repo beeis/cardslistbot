@@ -21,3 +21,4 @@ parameters:
     #Telegram
     telegram.api_key: null
     telegram.bot_username: null
+    telegram.webhook_url: null
