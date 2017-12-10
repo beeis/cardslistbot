@@ -23,18 +23,11 @@ class EditedMessage
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="message_id", type="bigint", nullable=true)
-     */
-    private $messageId;
 
     /**
      * @var \DateTime
@@ -73,6 +66,17 @@ class EditedMessage
      * })
      */
     private $chat;
+
+    /**
+     * @var \CardsList\BotBundle\Entity\Message
+     *
+     * @ORM\ManyToOne(targetEntity="CardsList\BotBundle\Entity\Message")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="chat_id", referencedColumnName="chat_id"),
+     *   @ORM\JoinColumn(name="message_id", referencedColumnName="id")
+     * })
+     */
+    private $message;
 
     /**
      * @var \CardsList\BotBundle\Entity\User

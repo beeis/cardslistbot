@@ -22,7 +22,7 @@ class Conversation
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -31,14 +31,14 @@ class Conversation
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=160, nullable=false)
+     * @ORM\Column(name="status", type="string", length=160, nullable=false, options={"default":"active"})
      */
     private $status = 'active';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="command", type="string", length=160, nullable=true)
+     * @ORM\Column(name="command", type="string", length=160, nullable=true, options={"default":""})
      */
     private $command = '';
 

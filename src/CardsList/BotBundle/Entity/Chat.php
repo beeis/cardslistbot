@@ -34,23 +34,23 @@ class Chat
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=true)
+     * @ORM\Column(name="title", type="string", length=255, options={"fixed" = true, "default"=""})
      */
     private $title = '';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     * @ORM\Column(name="username", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $username;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="all_members_are_administrators", type="boolean", nullable=true)
+     * @ORM\Column(name="all_members_are_administrators", type="boolean", nullable=true, options={"default"=false})
      */
-    private $allMembersAreAdministrators = '0';
+    private $allMembersAreAdministrators = false;
 
     /**
      * @var \DateTime

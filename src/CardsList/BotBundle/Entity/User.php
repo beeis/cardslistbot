@@ -23,42 +23,42 @@ class User
      *
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $id;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_bot", type="boolean", nullable=true)
+     * @ORM\Column(name="is_bot", type="boolean", nullable=true, options={"default"=false})
      */
-    private $isBot = '0';
+    private $isBot = false;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="first_name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=false, options={"fixed" = true,"default"=""})
      */
     private $firstName = '';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $lastName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=191, nullable=true)
+     * @ORM\Column(name="username", type="string", length=191, nullable=true, options={"fixed" = true})
      */
     private $username;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="language_code", type="string", length=10, nullable=true)
+     * @ORM\Column(name="language_code", type="string", length=10, nullable=true, options={"fixed" = true})
      */
     private $languageCode;
 

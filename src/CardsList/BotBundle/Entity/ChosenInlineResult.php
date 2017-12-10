@@ -18,7 +18,7 @@ class ChosenInlineResult
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -27,21 +27,21 @@ class ChosenInlineResult
     /**
      * @var string
      *
-     * @ORM\Column(name="result_id", type="string", length=255, nullable=false)
+     * @ORM\Column(name="result_id", type="string", length=255, options={"fixed" = true, "default"=""})
      */
     private $resultId = '';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="location", type="string", length=255, nullable=true)
+     * @ORM\Column(name="location", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $location;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $inlineMessageId;
 

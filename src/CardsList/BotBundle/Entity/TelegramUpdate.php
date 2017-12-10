@@ -24,7 +24,7 @@ class TelegramUpdate
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", length=20, options={"unsigned"=true, "comment" = "Update''s unique identifier"})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -73,7 +73,7 @@ class TelegramUpdate
 
     /**
      * @var \CardsList\BotBundle\Entity\EditedMessage
-     *
+
      * @ORM\ManyToOne(targetEntity="CardsList\BotBundle\Entity\EditedMessage")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="edited_message_id", referencedColumnName="id")

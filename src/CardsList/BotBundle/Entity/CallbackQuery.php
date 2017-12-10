@@ -23,23 +23,23 @@ class CallbackQuery
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $inlineMessageId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="data", type="string", length=255, nullable=false)
+     * @ORM\Column(name="data", type="string", length=255, nullable=false, options={"fixed" = true, "default"=""})
      */
     private $data = '';
 

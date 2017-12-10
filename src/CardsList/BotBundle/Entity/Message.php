@@ -18,8 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         @ORM\Index(name="left_chat_member", columns={"left_chat_member"}),
  *         @ORM\Index(name="migrate_from_chat_id", columns={"migrate_from_chat_id"}),
  *         @ORM\Index(name="migrate_to_chat_id", columns={"migrate_to_chat_id"}),
- *         @ORM\Index(name="reply_to_chat_2", columns={"reply_to_chat", "reply_to_message"}),
- *         @ORM\Index(name="IDX_B6BD307F1A9A7125", columns={"chat_id"})
+ *         @ORM\Index(name="reply_to_chat_2", columns={"reply_to_chat", "reply_to_message"})
  *     },
  *     options={"collate"="utf8mb4_unicode_520_ci", "charset"="utf8mb4"}
  * )
@@ -30,7 +29,7 @@ class Message
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", length=20, options={"unsigned"=true, "comment" = "Unique message identifier"})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -158,7 +157,7 @@ class Message
     /**
      * @var string
      *
-     * @ORM\Column(name="new_chat_title", type="string", length=255, nullable=true)
+     * @ORM\Column(name="new_chat_title", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $newChatTitle;
 
@@ -224,7 +223,7 @@ class Message
      * @ORM\Id
      * @ORM\OneToOne(targetEntity="CardsList\BotBundle\Entity\Chat")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="chat_id", referencedColumnName="id", unique=true)
+     *   @ORM\JoinColumn(name="chat_id", referencedColumnName="id")
      * })
      */
     private $chat;

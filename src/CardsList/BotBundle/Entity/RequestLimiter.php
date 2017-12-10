@@ -17,7 +17,7 @@ class RequestLimiter
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -26,21 +26,21 @@ class RequestLimiter
     /**
      * @var string
      *
-     * @ORM\Column(name="chat_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="chat_id", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $chatId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="inline_message_id", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $inlineMessageId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="method", type="string", length=255, nullable=true)
+     * @ORM\Column(name="method", type="string", length=255, nullable=true, options={"fixed" = true})
      */
     private $method;
 

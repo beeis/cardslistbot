@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(
  *     name="botan_shortener",
  *     indexes={@ORM\Index(name="user_id", columns={"user_id"})},
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"}
+ *     options={"collate"="utf8mb4_unicode_520_ci", "charset"="utf8mb4"}
  *     )
  * @ORM\Entity
  */
@@ -19,7 +19,7 @@ class BotanShortener
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(name="id", type="bigint", options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -35,7 +35,7 @@ class BotanShortener
     /**
      * @var string
      *
-     * @ORM\Column(name="short_url", type="string", length=255, nullable=false)
+     * @ORM\Column(name="short_url", type="string", length=255, nullable=false, options={"fixed" = true})
      */
     private $shortUrl = '';
 
