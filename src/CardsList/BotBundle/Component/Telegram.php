@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardsList\BotBundle\Component;
 
 use CardsList\BotBundle\Command\Bot\BotCommand;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram as CoreTelegram;
 
 /**
@@ -39,13 +40,18 @@ class Telegram extends CoreTelegram
 
     /**
      * {@inheritdoc}
-     * @deprecated
      *
      * @return BotCommand
      */
     public function getCommandObject($command)
     {
-        $commandObject = $this->commands[$command];
+        $command = explode('_', $command);
+
+        if (false === isset($this->commands[$command['0']])) {
+            throw new TelegramException(sprintf('Command %s is not valid', $command['0']));
+        }
+
+        $commandObject = $this->commands[$command['0']];
         $commandObject->setUpdate($this->update);
 
         return $commandObject;

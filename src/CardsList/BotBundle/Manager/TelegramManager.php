@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Manager;
 
+use CardsList\BotBundle\Component\Telegram;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\Telegram;
 use Longman\TelegramBot\TelegramLog;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;

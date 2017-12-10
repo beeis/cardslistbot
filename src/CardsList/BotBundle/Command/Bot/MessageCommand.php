@@ -46,7 +46,7 @@ class MessageCommand extends BotCommand
         $user = $message->getFrom();
         $chat_id = $message->getChat()->getId();
 
-        $userCardRepository = $this->entityManager->getRepository(UserCard::class);
+        /*$userCardRepository = $this->entityManager->getRepository(UserCard::class);
         $userCard = $userCardRepository->findOneBy(
             [
                 'user' => $user->getId(),
@@ -65,7 +65,7 @@ class MessageCommand extends BotCommand
             );
         }
 
-        if (null === $userCard) {
+        if (null === $userCard) {*/
             //TODO: check on existing card number
             return Request::sendMessage(
                 [
@@ -76,18 +76,18 @@ class MessageCommand extends BotCommand
                             [
                                 [
                                     'text' => '➕ Карту',
-                                    'callback_data' => 'addCard:'.$cardValid['number'],
+                                    'callback_data' => 'addCard:',
                                 ],
                                 [
                                     'text' => '➕ Друга',
-                                    'switch_inline_query' => 'method:addCard:'.$cardValid['number'],
+                                    'switch_inline_query' => 'method:addCard:',
                                 ],
                             ],
                         ],
                     ],
                 ]
             );
-        }
+       /* }
 
         $card = new Card();
         $card->setUser($user->getId());
@@ -105,6 +105,6 @@ class MessageCommand extends BotCommand
                 'text' => $user->getFirstName().', я сохранил Вашу карту!'.PHP_EOL.
                     'Карта: '.$userCard->getCustomName().' ****'.substr($card->getNumber(), -4),
             ]
-        );
+        );*/
     }
 }

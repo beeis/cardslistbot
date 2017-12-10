@@ -35,6 +35,24 @@ services:
         tags:
             - { name: telegram.command, command: start }
 
+    cards_list_bot.command_bot.list_command:
+        class: CardsList\BotBundle\Command\Bot\ListCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: list }
+
+    cards_list_bot.command_bot.more_command:
+        class: CardsList\BotBundle\Command\Bot\MoreCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: more }
+
+    cards_list_bot.command_bot.add_command:
+        class: CardsList\BotBundle\Command\Bot\AddCommand
+        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        tags:
+            - { name: telegram.command, command: add }
+
     cards_list_bot.command_bot.callback_query_command:
         class: CardsList\BotBundle\Command\Bot\CallbackQueryCommand
         arguments: ['@Doctrine\ORM\EntityManagerInterface']
