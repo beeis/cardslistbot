@@ -82,7 +82,7 @@ class ListCommand extends BotCommand
 
         foreach ($cards as $card) {
             $text .= sprintf(
-                '%s. %s 💳 ****%s /%s_%s'.PHP_EOL,
+                '%s. 👤 %s '.PHP_EOL.'💳 ****%s 👉 /%s_%s'.PHP_EOL,
                 ++$i,
                 $card->getHolderName(),
                 substr($card->getNumber(), -4),
@@ -99,7 +99,7 @@ class ListCommand extends BotCommand
         }
 
         $data['text'] = 'Список сохраненных карт:'.PHP_EOL.PHP_EOL.$text.PHP_EOL.PHP_EOL.
-            'Жми команду more чтобы '.PHP_EOL.'✏ ️редактировать'.PHP_EOL.' ❌ удалять'.PHP_EOL.' 🗣 переслать';
+            'Жми команду '.CardCommand::NAME.' чтобы '.PHP_EOL.'✏️ редактировать'.PHP_EOL.' ❌ удалять'.PHP_EOL.' 🗣 переслать';
 
         return Request::sendMessage($data);
     }

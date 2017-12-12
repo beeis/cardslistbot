@@ -115,27 +115,14 @@ class InlineQueryCommand extends BotCommand
             ];
         }
 
+        $switch_pm_text = 'Добавить новую карту';
+        $switch_pm_parameter = 'none';
         if (true === empty($results)) {
             $card = InachoCreditCard::validCreditCard($query);
             if (true === $card['valid']) {
                 $switch_pm_text = 'Сохранить эту карту';
                 $switch_pm_parameter = $card['number'];
-            } else {
-                $switch_pm_text = 'Добавить новую карту';
-                $switch_pm_parameter = 'none';
             }
-
-            $res =  Request::answerInlineQuery(
-                [
-                    'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
-                    'cache_time' => 0, //for dev env
-                    'results' => [],
-                    'switch_pm_text' => $switch_pm_text,
-                    'switch_pm_parameter' => $switch_pm_parameter
-                ]
-            );
-
-            return $res;
         }
 
         return Request::answerInlineQuery(
@@ -143,6 +130,8 @@ class InlineQueryCommand extends BotCommand
                 'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
                 'cache_time' => 0, //for dev env
                 'results' => $results,
+                'switch_pm_text' => $switch_pm_text,
+                'switch_pm_parameter' => $switch_pm_parameter
             ]
         );
     }
