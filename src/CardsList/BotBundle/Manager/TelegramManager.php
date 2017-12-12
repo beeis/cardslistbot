@@ -73,8 +73,8 @@ class TelegramManager
         $this->enableMySqlConnection();
         $this->enableLogging();
 
-        if (true === isset($data['botan_url'])) {
-            $this->telegram->enableBotan($data['botan_url']);
+        if (true === isset($data['botan_token'])) {
+            $this->telegram->enableBotan($data['botan_token']);
         }
     }
 
@@ -113,5 +113,4 @@ class TelegramManager
 
         return null;
     }
-
 }

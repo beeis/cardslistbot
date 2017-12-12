@@ -1,6 +1,7 @@
 parameters:
     cards_list_bot.manager.telegram_manager.data:
         webhook_url: '%telegram.webhook_url%'
+        botan_token: '%telegram.botan_token%'
 
 services:
     cards_list_bot.manager.telegram_manager:
