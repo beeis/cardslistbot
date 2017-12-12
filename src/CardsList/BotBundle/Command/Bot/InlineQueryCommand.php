@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Command\Bot;
 
-use CardsList\BotBundle\Entity\UserCard;
+use CardsList\BotBundle\Entity\CreditCard;
 use Doctrine\ORM\EntityManagerInterface;
+use Inacho\CreditCard as InachoCreditCard;
 use Longman\TelegramBot\Request;
 
 /**
@@ -54,109 +55,87 @@ class InlineQueryCommand extends BotCommand
         $user = $inline_query->getFrom();
         $query = $inline_query->getQuery();
 
-        if (1 === preg_match('/method:addCard:[0-9]{16}/', $query)) {
-            //TODO: check is number valid
-
-            return Request::answerInlineQuery(
-                [
-                    'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
-                    'cache_time' => 0, //for dev env
-                    'results' => [
-                        [
-                            'type' => 'article',
-                            'id' => substr($query, -16),
-                            'title' => 'Отправить другу запрос на добавление карти',
-                            'input_message_content' => [
-                                'message_text' => $inline_query->getFrom()->getFirstName().
-                                    ' хочет добавить вашу карту '.
-                                    substr($query, -16).
-                                    ' в список @'.$this->telegram->getBotUsername(),
-                            ],
-                            'reply_markup' => [
-                                'inline_keyboard' => [
-                                    [
-                                        [
-                                            'text' => '➕ Добавть',
-                                            'callback_data' => 'addCard:'.$inline_query->getFrom()->getId().':'.
-                                                substr($query, -16),
-                                        ],
-                                    ],
-                                ],
-                            ],
-                            'thumb_url' => 'https://vignette.wikia.nocookie.net/creditcards/images/6/65/Brand.gif/revision/latest',
-                            'thumb_width' => 50,
-                            'thumb_height' => 50,
-                        ],
-                    ],
-                ]
-            );
-        } elseif (1 === preg_match('/method:addCard$/', $query)) {
-
-            return Request::answerInlineQuery(
-                [
-                    'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
-                    'cache_time' => 0, //for dev env
-                    'results' => [
-                        [
-                            'type' => 'article',
-                            'id' => substr($query, -16),
-                            'title' => 'Отправить другу запрос на добавление',
-                            'input_message_content' => [
-                                'message_text' => $inline_query->getFrom()->getFirstName().
-                                    ' запрашивает Вашу кредитную карту чтобы сохранить её'.
-                                    ' в список @'.$this->telegram->getBotUsername().PHP_EOL.PHP_EOL.
-                                    'Перейдите в бота чтобы добавить свою карту @'.$this->telegram->getBotUsername(),
-                            ],
-                            'thumb_url' => 'https://vignette.wikia.nocookie.net/creditcards/images/6/65/Brand.gif/revision/latest',
-                            'thumb_width' => 50,
-                            'thumb_height' => 50,
-                        ],
-                    ],
-                ]
-            );
-        }
-
         $expr = $this->entityManager->createQueryBuilder()->expr();
-        $expr->like('user_card.customName', ':query');
 
-        $userCards = $this->entityManager
+        $creditCards = $this->entityManager
             ->createQueryBuilder()
-            ->select('user_card')
-            ->from('CardsListBotBundle:UserCard', 'user_card')
-            ->where('user_card.isOwner = 1 AND user_card.user = :user_id')
-            ->orWhere($expr->like('user_card.customName', ':query').' AND user_card.user = :user_id')
-            ->orderBy('user_card.isOwner', 'DESC')
+            ->select('credit_card')
+            ->from('CardsListBotBundle:CreditCard', 'credit_card')
+            ->orWhere($expr->like('credit_card.holderName', ':query'))
+            ->orWhere('credit_card.number = :number')
+            ->andWhere('credit_card.user = :user_id')
             ->setParameters(
                 [
                     'user_id' => $user->getId(),
                     'query' => '%'.$query.'%',
+                    'number' => $query,
                 ]
             )
             ->getQuery()
             ->getResult();
 
         $results = [];
-        /** @var UserCard $userCard */
-        foreach ($userCards as $userCard) {
+        /** @var CreditCard $creditCard */
+        foreach ($creditCards as $creditCard) {
             $results[] = [
                 'type' => 'article',
-                'id' => $userCard->getId(),
+                'id' => $creditCard->getId(),
                 'title' => sprintf(
-                    '%s ****%s',
-                    $userCard->getCustomName(),
-                    substr($userCard->getCard()->getNumber(), -4)
+                    '👤 %s ****%s',
+                    $creditCard->getHolderName(),
+                    substr($creditCard->getNumber(), -4)
                 ),
                 'input_message_content' => [
                     'message_text' => sprintf(
-                        '%s карта: %s',
-                        $userCard->getCustomName(),
-                        $userCard->getCard()->getNumber()
+                        '👤 %s '.PHP_EOL.'💳 %s',
+                        $creditCard->getHolderName(),
+                        $creditCard->getNumber()
                     ),
                 ],
-                'thumb_url' => 'https://vignette.wikia.nocookie.net/creditcards/images/6/65/Brand.gif/revision/latest',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => '➕ Сохранить',
+                                //TODO: check is callback_data is not over 64bytes
+                                'callback_data' => json_encode(
+                                    [
+                                        'command' => 'cloneToUser',
+                                        'card_id' => $creditCard->getId(),
+                                    ]
+                                ),
+                            ],
+                        ],
+                    ],
+                ],
+                'description' => '💳'.$creditCard->getNumber(),
+                'thumb_url' => $creditCard->getLogoImage(),
                 'thumb_width' => 10,
                 'thumb_height' => 10,
             ];
+        }
+
+        if (true === empty($results)) {
+            $card = InachoCreditCard::validCreditCard($query);
+            if (true === $card['valid']) {
+                $switch_pm_text = 'Сохранить эту карту';
+                $switch_pm_parameter = $card['number'];
+            } else {
+                $switch_pm_text = 'Добавить новую карту';
+                $switch_pm_parameter = 'none';
+            }
+
+            $res =  Request::answerInlineQuery(
+                [
+                    'inline_query_id' => $this->getUpdate()->getInlineQuery()->getId(),
+                    'cache_time' => 0, //for dev env
+                    'results' => [],
+                    'switch_pm_text' => $switch_pm_text,
+                    'switch_pm_parameter' => $switch_pm_parameter
+                ]
+            );
+
+            return $res;
         }
 
         return Request::answerInlineQuery(

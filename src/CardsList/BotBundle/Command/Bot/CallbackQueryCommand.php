@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Command\Bot;
 
-use CardsList\BotBundle\Entity\Card;
-use CardsList\BotBundle\Entity\UserCard;
+use CardsList\BotBundle\Exception\CardsListBotException;
+use CardsList\BotBundle\Manager\CallbackQueryManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Request;
 
 /**
@@ -16,21 +17,6 @@ use Longman\TelegramBot\Request;
  */
 class CallbackQueryCommand extends BotCommand
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * CallbackQueryCommand constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * Name
      *
@@ -58,108 +44,54 @@ class CallbackQueryCommand extends BotCommand
     protected $version = '1.0.0';
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var CallbackQueryManager
+     */
+    private $callbackQueryManager;
+
+    /**
+     * CallbackQueryCommand constructor.
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param CallbackQueryManager $callbackQueryManager
+     */
+    public function __construct(EntityManagerInterface $entityManager, CallbackQueryManager $callbackQueryManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->callbackQueryManager = $callbackQueryManager;
+    }
+
+    /**
      * Execute command
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
     public function execute()
     {
         $callbackQuery = $this->getUpdate()->getCallbackQuery();
-        $user = $callbackQuery->getFrom();
-        $fullName = trim(sprintf('%s %s', $user->getFirstName(), $user->getLastName()));
+        $data = json_decode($callbackQuery->getData(), true);
 
-        if ('addCard' === $callbackQuery->getData()) {
-            //TODO: check on existing user_card row without card
-            $userCard = new UserCard();
-            $userCard->setUser($user->getId());
-            $userCard->setCustomName($fullName);
-            $userCard->setIsOwner(true);
-
-            $this->entityManager->persist($userCard);
-            $this->entityManager->flush();
-
-            Request::sendMessage(
+        try {
+            $command = $data['command'];
+            return $this->callbackQueryManager->$command($callbackQuery);
+        } catch (CardsListBotException $exception) {
+            return Request::answerCallbackQuery(
                 [
-                    'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                    'text' => 'Отправь мне номер своей карты!',
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'text' => $exception->getMessage(),
                 ]
             );
-        } elseif (1 === preg_match('/addCard:([0-9]{0,20}):([0-9]{16})/', $callbackQuery->getData(), $matches)) {
-            //TODO: find user by id in database
-            $userId = $matches[1];
-            $cardNumber = $matches[2];
-
-            if ((int)$userId === $user->getId()) {
-
-                return Request::answerCallbackQuery(
-                    [
-                        'callback_query_id' => $callbackQuery->getId(),
-                        'show_alert' => true,
-                        'text' => $user->getFirstName().', это действие прдназначено не для Вас.'
-                    ]
-                );
-            }
-
-            $card = new Card();
-            $card->setUser($user->getId());
-            $card->setNumber($cardNumber);
-
-            $userCard = new UserCard();
-            $userCard->setUser((int) $userId);
-            $userCard->setCustomName($fullName);
-            $userCard->setIsOwner(false);
-            $userCard->setCard($card);
-
-            $userCardNew = new UserCard();
-            $userCardNew->setUser($user->getId());
-            $userCardNew->setCustomName($fullName);
-            $userCardNew->setIsOwner(true);
-            $userCardNew->setCard($card);
-
-            $this->entityManager->persist($userCardNew);
-            $this->entityManager->persist($userCard);
-            $this->entityManager->persist($card);
-            $this->entityManager->flush();
-
-            Request::editMessageText(
+        } catch (\Exception $exception) {
+            return Request::answerCallbackQuery(
                 [
-                    'inline_message_id' => $callbackQuery->getInlineMessageId(),
-                    'text' => $userId.' добавил карту в @'.$this->telegram->getBotUsername().PHP_EOL.
-                        'Карта: '.$userCard->getCustomName().' ****'.substr($card->getNumber(), -4),
-                ]
-            );
-
-        } elseif (1 === preg_match('/addCard:([0-9]{0,20})$/', $callbackQuery->getData(), $matches)) {
-            $cardNumber = $matches[1];
-
-            $card = new Card();
-            $card->setUser($user->getId());
-            $card->setNumber($cardNumber);
-
-            $userCard = new UserCard();
-            $userCard->setUser($user->getId());
-            $userCard->setCustomName($fullName);
-            $userCard->setIsOwner(true);
-            $userCard->setCard($card);
-
-            $this->entityManager->persist($userCard);
-            $this->entityManager->persist($card);
-            $this->entityManager->flush();
-
-            Request::sendMessage(
-                [
-                    'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                    'text' => $user->getFirstName().', я сохранил Вашу карту!'.PHP_EOL.
-                        'Карта: '.$userCard->getCustomName().' ****'.substr($card->getNumber(), -4),
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'text' => $exception->getMessage(),
                 ]
             );
         }
-
-        return Request::answerCallbackQuery(
-            [
-                'callback_query_id' => $callbackQuery->getId(),
-            ]
-        );
     }
 }

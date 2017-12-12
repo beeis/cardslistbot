@@ -92,11 +92,19 @@ class User
     private $chat;
 
     /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="CardsList\BotBundle\Entity\CreditCard", mappedBy="user")
+     */
+    private $creditCards;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->chat = new ArrayCollection();
+        $this->creditCards = new ArrayCollection();
     }
 
     /**
@@ -169,6 +177,14 @@ class User
     public function getChat(): Collection
     {
         return $this->chat;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCreditCards(): Collection
+    {
+        return $this->creditCards;
     }
 }
 

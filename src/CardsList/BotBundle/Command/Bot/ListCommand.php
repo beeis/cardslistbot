@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CardsList\BotBundle\Command\Bot;
 
 use CardsList\BotBundle\Entity\CreditCard;
-use CardsList\BotBundle\Entity\UserCard;
 use Doctrine\ORM\EntityManagerInterface;
 use Longman\TelegramBot\Request;
 
@@ -16,6 +15,8 @@ use Longman\TelegramBot\Request;
  */
 class ListCommand extends BotCommand
 {
+    const NAME = 'list';
+
     /**
      * Name
      *
@@ -85,7 +86,7 @@ class ListCommand extends BotCommand
                 ++$i,
                 $card->getHolderName(),
                 substr($card->getNumber(), -4),
-                MoreCommand::NAME,
+                CardCommand::NAME,
                 $card->getId()
             );
         }

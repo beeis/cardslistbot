@@ -49,6 +49,7 @@ class StartCommand extends BotCommand
      */
     public function execute()
     {
+        //TODO: add new card if /start with card number from switch_pm_text InlineQueryCommand
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
 
@@ -59,20 +60,6 @@ class StartCommand extends BotCommand
                 '/list - посмотреть список сохраненных карт'.PHP_EOL.PHP_EOL.
                 'Чтобы быстро отправить карту с своего списка просто напиши в чате @'.$this->telegram->getBotUsername().
                 ' и имя собственника карты.',
-            'reply_markup' => [
-                'inline_keyboard' => [
-                    [
-                        [
-                            'text' => '➕ Карту',
-                            'callback_data' => 'addCard',
-                        ],
-                        [
-                            'text' => '➕ Друга',
-                            'switch_inline_query' => 'method:addCard',
-                        ],
-                    ],
-                ],
-            ],
         ];
 
         return Request::sendMessage($data);

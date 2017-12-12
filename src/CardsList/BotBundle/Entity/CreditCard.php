@@ -43,16 +43,16 @@ class CreditCard
     private $holderName;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="type", type="smallint", length=1, nullable=true)
+     * @ORM\Column(name="type", type="string", length=160, nullable=true)
      */
     private $type;
 
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="CardsList\BotBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="CardsList\BotBundle\Entity\User", inversedBy="creditCards")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
@@ -60,9 +60,17 @@ class CreditCard
     private $user;
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    public function getId(): int
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getId()
     {
         return $this->id;
     }
@@ -100,17 +108,17 @@ class CreditCard
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getType(): int
+    public function getType(): string
     {
         return $this->type;
     }
 
     /**
-     * @param int $type
+     * @param string $type
      */
-    public function setType(int $type): void
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -129,5 +137,24 @@ class CreditCard
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    public function getLogoImage()
+    {
+        $logos = [
+            'visaelectron' => 'https://seeklogo.com/images/V/visa_electron_new-logo-050A090FFC-seeklogo.com.png',
+            'maestro' => 'https://www.about-payments.com/logo/300/225/570',
+            'forbrugsforeningen' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+            'dankort' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+            'visa' => 'https://seeklogo.com/images/V/visa-logo-6F4057663D-seeklogo.com.png',
+            'mastercard' => 'https://www.shareicon.net/data/256x256/2016/08/01/640317_card_512x512.png',
+            'amex' => 'http://icons.iconarchive.com/icons/designbolts/credit-card-payment/256/American-Express-icon.png',
+            'dinersclub' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+            'discover' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+            'unionpay' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+            'jcb' => 'http://www.wbdebtcare.com/wp-content/uploads/2016/02/credit-card.png',
+        ];
+
+        return $logos[$this->getType()];
     }
 }
