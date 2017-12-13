@@ -78,7 +78,7 @@ class CallbackQueryManager
         return Request::answerCallbackQuery(
             [
                 'callback_query_id' => $callbackQuery->getId(),
-                'text' => 'Карта успешно удалена',
+                'text' => '👍 Карта успешно удалена',
             ]
         );
     }
@@ -97,7 +97,7 @@ class CallbackQueryManager
             return Request::answerCallbackQuery(
                 [
                     'callback_query_id' => $callbackQuery->getId(),
-                    'text' => 'Карта не была найдена',
+                    'text' => '😞 Карта не была найдена',
                 ]
             );
         }
@@ -109,7 +109,7 @@ class CallbackQueryManager
         Request::sendMessage(
             [
                 'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                'text' => 'Напишите имя собственника карты чтобы закончить процесс сохранения карты!',
+                'text' => 'Для окончания процесса редактирования карты напишите имя владельца:',
             ]
         );
 

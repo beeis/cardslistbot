@@ -64,7 +64,7 @@ class AddCommand extends BotCommand
 
         $data = [
             'chat_id' => $chat_id,
-            'text' => 'отправьтете мне номер карты чтобы сохранить в свой личный список.'
+            'text' => 'Отправьтете мне номер карты чтобы сохранить в свой личный список.'
         ];
 
         return Request::sendMessage($data);

@@ -38,8 +38,7 @@ class MessageCommand extends BotCommand
     public function __construct(
         EntityManagerInterface $entityManager,
         CreditCardManager $creditCardManager
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->creditCardManager = $creditCardManager;
     }
@@ -64,19 +63,19 @@ class MessageCommand extends BotCommand
                 $creditCard->setType($conversation->notes['type']);
                 $creditCard->setUser($userEntity);
 
-                $messageText = 'Я успешно сохранил карту в Ваш список.';
+                $messageText = 'Я успешно сохранил карту в Ваш список.👌';
             } else {
                 $creditCard = $this->creditCardManager->findCard($conversation->notes['card_id']);
                 if (null === $creditCard) {
                     return Request::sendMessage(
                         [
                             'chat_id' => $chat_id,
-                            'text' => 'Простите, но карта не найдена :(',
+                            'text' => 'Простите, но карта не найдена 😢',
                         ]
                     );
                 }
 
-                $messageText = 'Я успешно отредактировал Вашу карту.';
+                $messageText = 'Я успешно отредактировал карту 👌:';
             }
 
             $creditCard->setHolderName(trim($holderName));
@@ -90,7 +89,7 @@ class MessageCommand extends BotCommand
                 [
                     'chat_id' => $chat_id,
                     'text' => $messageText.PHP_EOL.
-                        '/list - посмотреть весь список'.PHP_EOL.PHP_EOL.
+                        '/'.ListCommand::NAME.' - посмотреть весь список'.PHP_EOL.PHP_EOL.
                         sprintf(
                             '👤 %s '.PHP_EOL.'💳 %s',
                             $creditCard->getHolderName(),
@@ -206,7 +205,7 @@ class MessageCommand extends BotCommand
         return Request::sendMessage(
             [
                 'chat_id' => $chat_id,
-                'text' => 'Напишите имя собственника карты чтобы закончить процесс сохранения карты!',
+                'text' => 'Для окончания процесса сохранения карты напишите имя владельца:',
             ]
         );
     }
