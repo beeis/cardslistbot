@@ -71,7 +71,7 @@ class MessageCommand extends BotCommand
                     return Request::sendMessage(
                         [
                             'chat_id' => $chat_id,
-                            'text' => 'Простите, но карта небыла найдена :(',
+                            'text' => 'Простите, но карта не найдена :(',
                         ]
                     );
                 }
@@ -206,7 +206,7 @@ class MessageCommand extends BotCommand
         return Request::sendMessage(
             [
                 'chat_id' => $chat_id,
-                'text' => 'Напишите имя собственика карты чтобы закончить процесс сохранения карты!',
+                'text' => 'Напишите имя собственника карты чтобы закончить процесс сохранения карты!',
             ]
         );
     }

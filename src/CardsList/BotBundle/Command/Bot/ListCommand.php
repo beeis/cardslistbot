@@ -93,13 +93,13 @@ class ListCommand extends BotCommand
 
         if (true === empty($text)) {
             $data['text'] = 'Ваш список пуст 😞'.PHP_EOL.PHP_EOL.
-                'Просто отправь мне номер карты!😊';
+                'Просто отправьте мне номер карты!😊';
 
             return Request::sendMessage($data);
         }
 
         $data['text'] = 'Список сохраненных карт:'.PHP_EOL.PHP_EOL.$text.PHP_EOL.PHP_EOL.
-            'Жми команду '.CardCommand::NAME.' чтобы '.PHP_EOL.'✏️ редактировать'.PHP_EOL.' ❌ удалять'.PHP_EOL.' 🗣 переслать';
+            'Жмите команду '.CardCommand::NAME.' чтобы '.PHP_EOL.'✏️ редактировать'.PHP_EOL.' ❌ удалять'.PHP_EOL.' 🗣 переслать';
 
         return Request::sendMessage($data);
     }

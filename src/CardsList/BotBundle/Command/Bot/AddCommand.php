@@ -4,8 +4,6 @@
 namespace CardsList\BotBundle\Command\Bot;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Longman\TelegramBot\Entities\ServerResponse;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 /**
@@ -66,7 +64,7 @@ class AddCommand extends BotCommand
 
         $data = [
             'chat_id' => $chat_id,
-            'text' => 'Отправь мне номер карты чтобы соханить в свой личный список.'
+            'text' => 'отправьтете мне номер карты чтобы сохранить в свой личный список.'
         ];
 
         return Request::sendMessage($data);

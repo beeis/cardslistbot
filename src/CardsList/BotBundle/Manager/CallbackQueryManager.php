@@ -60,7 +60,7 @@ class CallbackQueryManager
         return Request::answerCallbackQuery(
             [
                 'callback_query_id' => $callbackQuery->getId(),
-                'text' => 'Карта была успешно сохранена',
+                'text' => 'Карта успешно сохранена',
             ]
         );
     }
@@ -109,7 +109,7 @@ class CallbackQueryManager
         Request::sendMessage(
             [
                 'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                'text' => 'Напишите имя собственика карты чтобы закончить процесс сохранения карты!',
+                'text' => 'Напишите имя собственника карты чтобы закончить процесс сохранения карты!',
             ]
         );
 

@@ -67,7 +67,7 @@ class CardCommand extends BotCommand
 
         $command = explode('_', $message->getCommand());
         if (false === isset($command[1])) {
-            $data['text'] = 'Не правильный формат команди /'.self::NAME;
+            $data['text'] = 'Не правильный формат команды /'.self::NAME;
 
             return Request::sendMessage($data);
         }
