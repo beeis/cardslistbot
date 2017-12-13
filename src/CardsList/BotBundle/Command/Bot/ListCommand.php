@@ -99,7 +99,7 @@ class ListCommand extends BotCommand
         }
 
         $data['text'] = 'Список сохраненных карт:'.PHP_EOL.PHP_EOL.$text.PHP_EOL.PHP_EOL.
-            'Жмите команду '.CardCommand::NAME.' чтобы '.PHP_EOL.'✏️ редактировать'.PHP_EOL.' ❌ удалять'.PHP_EOL.' 🗣 переслать';
+            'Жмите команду '.CardCommand::NAME.' чтобы '.PHP_EOL.'✏️ изменить имя'.PHP_EOL.' ❌ удалить'.PHP_EOL.' 🗣 поделится';
 
         return Request::sendMessage($data);
     }
