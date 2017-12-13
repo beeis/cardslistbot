@@ -109,7 +109,7 @@ class CallbackQueryManager
         Request::sendMessage(
             [
                 'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                'text' => 'Для окончания процесса редактирования карты напишите имя владельца:',
+                'text' => 'Для окончания процесса редактирования карты напишите новое имя владельца:',
             ]
         );
 
