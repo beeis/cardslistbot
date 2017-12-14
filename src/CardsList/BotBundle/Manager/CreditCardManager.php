@@ -130,4 +130,21 @@ class CreditCardManager
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Incrementing chosenCount value
+     *
+     * @param $id
+     */
+    public function chosen($id): void
+    {
+        $this->entityManager
+            ->createQuery(
+                'UPDATE CardsListBotBundle:CreditCard credit_card 
+                      SET credit_card.chosenCount = (credit_card.chosenCount +1)
+                      WHERE credit_card.id = :id'
+            )
+            ->setParameter('id', $id)
+            ->execute();
+    }
 }

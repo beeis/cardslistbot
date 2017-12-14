@@ -74,7 +74,7 @@ services:
 
     cards_list_bot.command_bot.chosen_inline_result_command:
         class: CardsList\BotBundle\Command\Bot\ChosenInlineResultCommand
-        arguments: ['@Doctrine\ORM\EntityManagerInterface']
+        arguments: ['@Doctrine\ORM\EntityManagerInterface', '@cards_list_bot.manager.credit_card_manager']
         tags:
             - { name: telegram.command, command: choseninlineresult  }
 

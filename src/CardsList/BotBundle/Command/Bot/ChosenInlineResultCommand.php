@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Command\Bot;
 
-use CardsList\BotBundle\Entity\Card;
-use CardsList\BotBundle\Entity\UserCard;
+use CardsList\BotBundle\Manager\CreditCardManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Longman\TelegramBot\Request;
 
@@ -37,13 +36,22 @@ class ChosenInlineResultCommand extends BotCommand
     private $entityManager;
 
     /**
+     * @var CreditCardManager
+     */
+    private $creditCardManager;
+
+    /**
      * MessageCommand constructor.
      *
      * @param EntityManagerInterface $entityManager
+     * @param CreditCardManager $creditCardManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        CreditCardManager $creditCardManager
+    ) {
         $this->entityManager = $entityManager;
+        $this->creditCardManager = $creditCardManager;
     }
 
     /**
@@ -51,6 +59,9 @@ class ChosenInlineResultCommand extends BotCommand
      */
     public function execute()
     {
+        $chosenInline = $this->getUpdate()->getChosenInlineResult();
+        $this->creditCardManager->chosen($chosenInline->getResultId());
+
         return Request::emptyResponse();
     }
 }

@@ -51,9 +51,9 @@ class InlineQueryCommand extends BotCommand
      */
     public function execute()
     {
-        $inline_query = $this->getUpdate()->getInlineQuery();
-        $user = $inline_query->getFrom();
-        $query = $inline_query->getQuery();
+        $inlineQuery = $this->getUpdate()->getInlineQuery();
+        $user = $inlineQuery->getFrom();
+        $query = $inlineQuery->getQuery();
 
         $expr = $this->entityManager->createQueryBuilder()->expr();
 
@@ -64,6 +64,7 @@ class InlineQueryCommand extends BotCommand
             ->orWhere($expr->like('credit_card.holderName', ':query'))
             ->orWhere('credit_card.number = :number')
             ->andWhere('credit_card.user = :user_id')
+            ->orderBy('credit_card.chosenCount', 'DESC')
             ->setParameters(
                 [
                     'user_id' => $user->getId(),
