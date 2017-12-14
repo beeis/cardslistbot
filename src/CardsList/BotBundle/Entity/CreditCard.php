@@ -65,7 +65,7 @@ class CreditCard
      *
      * @ORM\Column(name="chosen_count", type="integer", nullable=false, options={"default"=0})
      */
-    private $chosenCount;
+    private $chosenCount = 0;
 
     /**
      * @var \DateTime $created
