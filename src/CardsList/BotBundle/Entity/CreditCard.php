@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CardsList\BotBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -58,6 +59,29 @@ class CreditCard
      * })
      */
     private $user;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="chosen_count", type="integer", nullable=false, options={"default"=0})
+     */
+    private $chosenCount;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
 
     /**
      * {@inheritdoc}
@@ -137,6 +161,30 @@ class CreditCard
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return int
+     */
+    public function getChosenCount(): int
+    {
+        return $this->chosenCount;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated(): \DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdated(): \DateTime
+    {
+        return $this->updated;
     }
 
     public function getLogoImage()
