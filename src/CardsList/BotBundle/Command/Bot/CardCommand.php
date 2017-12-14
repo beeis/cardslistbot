@@ -74,7 +74,7 @@ class CardCommand extends BotCommand
 
         $creditCard = $this->creditCardManager->findCard($command[1]);
         if (null === $creditCard) {
-            $data['text'] = 'Такая карта не существует, команду из списка /'.ListCommand::NAME;
+            $data['text'] = 'Такая карта не существует, выберите команду из списка /'.ListCommand::NAME;
 
             return Request::sendMessage($data);
         }

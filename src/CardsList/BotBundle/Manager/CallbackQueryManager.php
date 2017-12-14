@@ -73,7 +73,47 @@ class CallbackQueryManager
     public function delete(CallbackQuery $callbackQuery): ServerResponse
     {
         $data = json_decode($callbackQuery->getData(), true);
+        $creditCard = $this->creditCardManager->findCard($data['card_id']);
+        if (null === $creditCard) {
+            return Request::answerCallbackQuery(
+                [
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'text' => '😞 Карта не найдена',
+                ]
+            );
+        }
+
+        //stops editing conversation of current credit card
+        $conversation = new Conversation(
+            $callbackQuery->getFrom()->getId(),
+            $callbackQuery->getMessage()->getChat()->getId()
+        );
+
+        if (true === $conversation->exists() && 'edit' === $conversation->getCommand()) {
+            Request::deleteMessage(
+                [
+                    'chat_id' => $conversation->notes['chat_id'],
+                    'message_id' => $conversation->notes['message_id'],
+                ]
+            );
+            $conversation->stop();
+        }
+
+        //delete card by id
         $this->creditCardManager->delete($data['card_id']);
+
+        Request::editMessageText(
+            [
+                'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
+                'message_id' => $callbackQuery->getMessage()->getMessageId(),
+                'text' => sprintf(
+                    'Карта удалена: 👤 %s 💳 ****%s'.PHP_EOL.
+                    '➡️ Чтобы добавить новую карту - просто отправьте мне её номер.',
+                    $creditCard->getHolderName(),
+                    substr($creditCard->getNumber(), -4)
+                ),
+            ]
+        );
 
         return Request::answerCallbackQuery(
             [
@@ -102,20 +142,29 @@ class CallbackQueryManager
             );
         }
 
-        $conversation = new Conversation($callbackQuery->getFrom()->getId(), $callbackQuery->getMessage()->getChat()->getId(), 'edit');
-        $conversation->notes = ['card_id' => $creditCard->getId()];
-        $conversation->update();
+        $conversation = new Conversation(
+            $callbackQuery->getFrom()->getId(),
+            $callbackQuery->getMessage()->getChat()->getId(),
+            'edit'
+        );
 
-        Request::sendMessage(
+        $messageResponse = Request::sendMessage(
             [
                 'chat_id' => $callbackQuery->getMessage()->getChat()->getId(),
-                'text' => 'Для окончания процесса редактирования карты напишите новое имя владельца:',
+                'text' => 'Напишите новое имя владельца карты:',
             ]
         );
 
+        $conversation->notes = [
+            'card_id' => $creditCard->getId(),
+            'message_id' => $messageResponse->getResult()->getMessageId(),
+            'chat_id' => $messageResponse->getResult()->getChat()->getId(),
+        ];
+        $conversation->update();
+
         return Request::answerCallbackQuery(
             [
-                'callback_query_id' => $callbackQuery->getId()
+                'callback_query_id' => $callbackQuery->getId(),
             ]
         );
     }
