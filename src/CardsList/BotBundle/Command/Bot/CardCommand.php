@@ -73,48 +73,48 @@ class CardCommand extends BotCommand
         }
 
         $creditCard = $this->creditCardManager->findCard($command[1]);
-        if (null === $creditCard) {
-            $data['text'] = 'Такая карта не существует, выберите команду из списка /'.ListCommand::NAME;
+        if (null !== $creditCard && $creditCard->getUser()->getId() === $message->getFrom()->getId()) {
+            $data = [
+                'chat_id' => $message->getChat()->getId(),
+                'text' => sprintf(
+                    '👤 %s '.PHP_EOL.'💳 %s',
+                    $creditCard->getHolderName(),
+                    $creditCard->getNumber()
+                ),
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => '🗣',
+                                'switch_inline_query' => $creditCard->getNumber(),
+                            ],
+                            [
+                                'text' => '✏️',
+                                'callback_data' => json_encode(
+                                    [
+                                        'command' => 'edit',
+                                        'card_id' => $creditCard->getId(),
+                                    ]
+                                ),
+                            ],
+                            [
+                                'text' => '❌',
+                                'callback_data' => json_encode(
+                                    [
+                                        'command' => 'delete',
+                                        'card_id' => $creditCard->getId(),
+                                    ]
+                                ),
+                            ],
+                        ],
+                    ],
+                ],
+            ];
 
             return Request::sendMessage($data);
         }
 
-        $data = [
-            'chat_id' => $message->getChat()->getId(),
-            'text' => sprintf(
-                '👤 %s '.PHP_EOL.'💳 %s',
-                $creditCard->getHolderName(),
-                $creditCard->getNumber()
-            ),
-            'reply_markup' => [
-                'inline_keyboard' => [
-                    [
-                        [
-                            'text' => '🗣',
-                            'switch_inline_query' => $creditCard->getNumber(),
-                        ],
-                        [
-                            'text' => '✏️',
-                            'callback_data' => json_encode(
-                                [
-                                    'command' => 'edit',
-                                    'card_id' => $creditCard->getId(),
-                                ]
-                            ),
-                        ],
-                        [
-                            'text' => '❌',
-                            'callback_data' => json_encode(
-                                [
-                                    'command' => 'delete',
-                                    'card_id' => $creditCard->getId(),
-                                ]
-                            ),
-                        ],
-                    ],
-                ],
-            ],
-        ];
+        $data['text'] = 'Такая карта не существует, выберите команду из списка /'.ListCommand::NAME;
 
         return Request::sendMessage($data);
     }
