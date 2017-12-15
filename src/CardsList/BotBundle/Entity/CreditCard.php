@@ -89,6 +89,8 @@ class CreditCard
     public function __clone()
     {
         $this->id = null;
+        $this->created = null;
+        $this->updated = null;
     }
 
     /**
