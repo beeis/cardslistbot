@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CardsList\BotBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class CopyController
@@ -14,8 +13,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class CopyController extends Controller
 {
+    /**
+     * @param string $number
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function indexAction(string $number)
     {
-        return new JsonResponse(['ok' => true, 'result' => $number]);
+        return $this->render(
+            'CardsListBotBundle:Copy:index.html.twig',
+            [
+                'number' => $number,
+            ]
+        );
     }
+
 }

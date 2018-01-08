@@ -5,5 +5,5 @@ cards_list_bot_webhook:
 
 cards_list_bot_copy:
     path:     /copy/{number}
-    methods:  [POST]
+    methods:  [GET]
     defaults: { _controller: CardsListBotBundle:Copy:index }
