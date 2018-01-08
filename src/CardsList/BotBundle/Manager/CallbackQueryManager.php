@@ -55,7 +55,15 @@ class CallbackQueryManager
         $telegramUser = $callbackQuery->getFrom();
         $user = $this->findUser($telegramUser->getId());
 
-        $this->creditCardManager->cloneToUser($data['card_id'], $user);
+        $isCloned = $this->creditCardManager->cloneToUser($data['card_id'], $user);
+        if (false === $isCloned) {
+            return Request::answerCallbackQuery(
+                [
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'text' => 'Что-то пошло не так',
+                ]
+            );
+        }
 
         return Request::answerCallbackQuery(
             [

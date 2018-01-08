@@ -2,3 +2,8 @@ cards_list_bot_webhook:
     path:     /webhook
     methods:  [POST]
     defaults: { _controller: CardsListBotBundle:Webhook:index }
+
+cards_list_bot_copy:
+    path:     /copy/{number}
+    methods:  [POST]
+    defaults: { _controller: CardsListBotBundle:Copy:index }
