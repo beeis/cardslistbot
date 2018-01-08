@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CardsList\BotBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class CopyController
@@ -16,9 +17,9 @@ class CopyController extends Controller
     /**
      * @param string $number
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexAction(string $number)
+    public function indexAction(string $number): Response
     {
         return $this->render(
             'CardsListBotBundle:Copy:index.html.twig',
